@@ -16,6 +16,10 @@ public partial class EaglesOracleContext : DbContext
 
     public virtual DbSet<AddressType> AddressTypes { get; set; }
 
+    public virtual DbSet<Attr> Attrs { get; set; }
+
+    public virtual DbSet<AttrVal> AttrVals { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
@@ -23,6 +27,8 @@ public partial class EaglesOracleContext : DbContext
     public virtual DbSet<Gender> Genders { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
+
+    public virtual DbSet<InventoryAttrVal> InventoryAttrVals { get; set; }
 
     public virtual DbSet<InventoryState> InventoryStates { get; set; }
 
@@ -37,6 +43,8 @@ public partial class EaglesOracleContext : DbContext
     public virtual DbSet<OrdersLine> OrdersLines { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+
+    public virtual DbSet<ProductAttr> ProductAttrs { get; set; }
 
     public virtual DbSet<ProductPrice> ProductPrices { get; set; }
 
@@ -69,6 +77,28 @@ public partial class EaglesOracleContext : DbContext
             entity.Property(e => e.AddressTypeCrtdId).ValueGeneratedOnAdd();
             entity.Property(e => e.AddressTypeUpdtDt).ValueGeneratedOnAdd();
             entity.Property(e => e.AddressTypeUpdtId).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<Attr>(entity =>
+        {
+            entity.HasKey(e => e.AttrId).HasName("ATTR_PK");
+
+            entity.Property(e => e.AttrId).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrCrtdDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrCrtdId).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrUpdtDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrUpdtId).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<AttrVal>(entity =>
+        {
+            entity.HasKey(e => e.AttrValId).HasName("ATTR_VAL_PK");
+
+            entity.Property(e => e.AttrValId).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrValCrtdDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrValCrtdId).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrValUpdtDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.AttrValUpdtId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Customer>(entity =>
@@ -133,6 +163,29 @@ public partial class EaglesOracleContext : DbContext
             entity.HasOne(d => d.InventoryProduct).WithMany(p => p.Inventories)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("INVENTORY_FK1");
+        });
+
+        modelBuilder.Entity<InventoryAttrVal>(entity =>
+        {
+            entity.HasKey(e => e.InventoryAttrValId).HasName("INVENTORY_ATTR_VAL_PK");
+
+            entity.Property(e => e.InventoryAttrValId).ValueGeneratedOnAdd();
+            entity.Property(e => e.InventoryAttrValCrtdDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.InventoryAttrValCrtdId).ValueGeneratedOnAdd();
+            entity.Property(e => e.InventoryAttrValUpdtDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.InventoryAttrValUpdtId).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.InventoryAttrValAttrVal).WithMany(p => p.InventoryAttrVals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("INVENTORY_ATTR_VAL_FK3");
+
+            entity.HasOne(d => d.InventoryAttrValInventory).WithMany(p => p.InventoryAttrVals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("INVENTORY_ATTR_VAL_FK1");
+
+            entity.HasOne(d => d.InventoryAttrValProductAttr).WithMany(p => p.InventoryAttrVals)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("INVENTORY_ATTR_VAL_FK2");
         });
 
         modelBuilder.Entity<InventoryState>(entity =>
@@ -251,6 +304,25 @@ public partial class EaglesOracleContext : DbContext
             entity.HasOne(d => d.ProductProductStatus).WithMany(p => p.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("PRODUCT_FK1");
+        });
+
+        modelBuilder.Entity<ProductAttr>(entity =>
+        {
+            entity.HasKey(e => e.ProductAttrId).HasName("PRODUCT_ATTR_PK");
+
+            entity.Property(e => e.ProductAttrId).ValueGeneratedOnAdd();
+            entity.Property(e => e.ProductAttrCrtdDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.ProductAttrCrtdId).ValueGeneratedOnAdd();
+            entity.Property(e => e.ProductAttrUpdtDt).ValueGeneratedOnAdd();
+            entity.Property(e => e.ProductAttrUpdtId).ValueGeneratedOnAdd();
+
+            entity.HasOne(d => d.ProductAttrAttr).WithMany(p => p.ProductAttrs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PRODUCT_ATTR_FK2");
+
+            entity.HasOne(d => d.ProductAttrProduct).WithMany(p => p.ProductAttrs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PRODUCT_ATTR_FK1");
         });
 
         modelBuilder.Entity<ProductPrice>(entity =>
